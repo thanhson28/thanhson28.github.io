@@ -228,6 +228,14 @@ ul.pubs{border-top:0}
 .marq span{font:13px var(--f-mono);padding:7px 16px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass);white-space:nowrap}
 @keyframes marq{to{transform:translateX(-50%)}}
 footer{border-top-color:var(--glass-b)}
+.tabnav{display:flex;gap:30px;border-bottom:1px solid var(--line);margin-bottom:30px;flex-wrap:wrap}
+.tab-btn{-webkit-appearance:none;appearance:none;background:none;border:0;cursor:pointer;font:400 clamp(19px,3vw,27px) var(--f-display);color:var(--muted);padding:0 0 14px;position:relative;transition:color .25s}
+.tab-btn[aria-selected="true"]{color:var(--ink)}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.tab-btn[aria-selected="true"]::after{transform:scaleX(1)}
+.tabpanel{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+@media (max-width:560px){.tabnav{gap:20px}}
 @media (max-width:560px){header.top{border-radius:22px;top:6px}.hero-grid{grid-template-columns:1fr}.portrait-wrap{order:-1;width:130px}}
 @media (prefers-reduced-motion:reduce){.aurora i,h1 em,.portrait-wrap,.marq div,.rot b{animation:none}.reveal{opacity:1;transform:none;transition:none}}
 section{scroll-margin-top:70px}
@@ -290,33 +298,38 @@ section{scroll-margin-top:70px}
       </div>
     </section>
 
-    <section id="experience">
-      <h2>Experience</h2>
-      <ul class="xp">
-        <li><span class="when">Mar 2026 – now</span><div><h3>PhD student</h3><p class="org">Korea University, South Korea</p></div></li>
-        <li><span class="when">Jan 2020 – Feb 2026</span><div><h3>AI Engineer</h3><p class="org">Cybercore Co., Ltd. · Ho Chi Minh City</p><p class="d">Researched, reproduced and adapted state-of-the-art models for autonomous driving, face detection, pose estimation, abnormal object detection, action recognition and head pose estimation. Deployed on edge devices (Jetson family) with the DeepStream SDK.</p><p class="d win">Track 4 winner, NVIDIA AI City Challenge 2022 · 1st public / 3rd private, AI Zalo Challenge 2020 (traffic sign detection)</p></div></li>
-        <li><span class="when">Dec 2020 – Apr 2021</span><div><h3>Kaggle challenges</h3><p class="org">Self-employed</p><p class="d">Bronze medal in VinBigData Chest X-ray Abnormality Detection, with VFNet (5-fold) and YOLOv5 ensembles and medical-image augmentations.</p></div></li>
-        <li><span class="when">Jun – Oct 2019</span><div><h3>AI Engineer</h3><p class="org">Cloud Nine Solutions · Ho Chi Minh City</p><p class="d">Research on generative adversarial networks.</p></div></li>
-        <li><span class="when">Jul 2017 – May 2019</span><div><h3>AI Engineer</h3><p class="org">Global CyberSoft JSC · Vietnam</p></div></li>
-      </ul>
-      <h4 style="font:400 12px var(--f-mono);color:var(--muted);margin:28px 0 10px">education</h4>
-      <ul class="xp">
-        <li><span class="when">2026 – now</span><div><h3>PhD</h3><p class="org">Korea University</p></div></li>
-        <li><span class="when">2019 – 2023</span><div><h3>Master’s, Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
-        <li><span class="when">2012 – 2017</span><div><h3>Bachelor’s, Mathematics and Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
-      </ul>
-    </section>
-
-    <section id="papers">
-      <h2>Papers</h2>
-      <div class="stats" aria-label="Citation summary from the alphaXiv profile"><div><b data-count="44">44</b>citations</div><div><b data-count="4">4</b>h-index</div></div>
-      <div class="filters" role="group" aria-label="Filter papers by topic">
-        <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
-        <button type="button" id="f-mis" data-f="mis" aria-pressed="false">Misinformation</button>
-        <button type="button" id="f-action" data-f="action" aria-pressed="false">Action and video</button>
-        <button type="button" id="f-other" data-f="other" aria-pressed="false">Other</button>
+    <section id="work">
+      <div class="tabnav" role="tablist" aria-label="Experience, papers and projects">
+        <button type="button" class="tab-btn" role="tab" data-tab="experience" aria-selected="true">Experience</button>
+        <button type="button" class="tab-btn" role="tab" data-tab="papers" aria-selected="false">Papers</button>
+        <button type="button" class="tab-btn" role="tab" data-tab="projects" aria-selected="false">Projects</button>
       </div>
-      <ul class="pubs" id="pubs">
+
+      <div class="tabpanel" role="tabpanel" data-panel="experience">
+        <ul class="xp">
+          <li><span class="when">Mar 2026 – now</span><div><h3>PhD student</h3><p class="org">Korea University, South Korea</p></div></li>
+          <li><span class="when">Jan 2020 – Feb 2026</span><div><h3>AI Engineer</h3><p class="org">Cybercore Co., Ltd. · Ho Chi Minh City</p><p class="d">Researched, reproduced and adapted state-of-the-art models for autonomous driving, face detection, pose estimation, abnormal object detection, action recognition and head pose estimation. Deployed on edge devices (Jetson family) with the DeepStream SDK.</p><p class="d win">Track 4 winner, NVIDIA AI City Challenge 2022 · 1st public / 3rd private, AI Zalo Challenge 2020 (traffic sign detection)</p></div></li>
+          <li><span class="when">Dec 2020 – Apr 2021</span><div><h3>Kaggle challenges</h3><p class="org">Self-employed</p><p class="d">Bronze medal in VinBigData Chest X-ray Abnormality Detection, with VFNet (5-fold) and YOLOv5 ensembles and medical-image augmentations.</p></div></li>
+          <li><span class="when">Jun – Oct 2019</span><div><h3>AI Engineer</h3><p class="org">Cloud Nine Solutions · Ho Chi Minh City</p><p class="d">Research on generative adversarial networks.</p></div></li>
+          <li><span class="when">Jul 2017 – May 2019</span><div><h3>AI Engineer</h3><p class="org">Global CyberSoft JSC · Vietnam</p></div></li>
+        </ul>
+        <h4 style="font:400 12px var(--f-mono);color:var(--muted);margin:28px 0 10px">education</h4>
+        <ul class="xp">
+          <li><span class="when">2026 – now</span><div><h3>PhD</h3><p class="org">Korea University</p></div></li>
+          <li><span class="when">2019 – 2023</span><div><h3>Master’s, Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
+          <li><span class="when">2012 – 2017</span><div><h3>Bachelor’s, Mathematics and Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
+        </ul>
+      </div>
+
+      <div class="tabpanel" role="tabpanel" data-panel="papers" hidden>
+        <div class="stats" aria-label="Citation summary from the alphaXiv profile"><div><b data-count="44">44</b>citations</div><div><b data-count="4">4</b>h-index</div></div>
+        <div class="filters" role="group" aria-label="Filter papers by topic">
+          <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+          <button type="button" id="f-mis" data-f="mis" aria-pressed="false">Misinformation</button>
+          <button type="button" id="f-action" data-f="action" aria-pressed="false">Action and video</button>
+          <button type="button" id="f-other" data-f="other" aria-pressed="false">Other</button>
+        </div>
+        <ul class="pubs" id="pubs">
 <li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>A Unified Network for Detecting Out-Of-Context Information Using Generative Synthetic Data</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>5</b> cit.</span></li>
 <li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>Detecting Misinformation in Photos Utilizing Reverse Image Search</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>4</b> cit.</span></li>
 <li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>A Hybrid Approach for Cheapfake Detection Using Reputation Checking and End-To-End Network</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>3</b> cit.</span></li>
@@ -327,21 +340,21 @@ section{scroll-margin-top:70px}
 <li class="pub" data-topic="other"><span class="yr">2022</span><div class="pb"><h3>HCMUS at the NTCIR-16 RCIR Task</h3><p class="meta"><span class="chip-s other">Other</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>2</b> cit.</span></li>
 <li class="pub" data-topic="action"><span class="yr">2021</span><div class="pb"><h3>HCMUS at MediaEval 2021: Ensembles of Action Recognition Networks with Prior Knowledge for Table Tennis Strokes Classification Task</h3><p class="meta"><span class="chip-s action">Action and video</span> · MediaEval</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>2</b> cit.</span></li>
 <li class="pub" data-topic="other"><span class="yr">—</span><div class="pb"><h3>EnAug: ENT Endoscopy Images Classification Using Ensemble and Augmentation Methods</h3><p class="meta"><span class="chip-s other">Other</span> · International Symposium on Information and Communication Technology</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>1</b> cit.</span></li>
-      </ul>
-      <p class="more">Full list on <a href="https://scholar.google.com/citations?user=qQGaP14AAAAJ">Google Scholar</a> and <a href="https://www.alphaxiv.org/@thanh-son-nguyen">alphaXiv</a>.</p>
-    </section>
+        </ul>
+        <p class="more">Full list on <a href="https://scholar.google.com/citations?user=qQGaP14AAAAJ">Google Scholar</a> and <a href="https://www.alphaxiv.org/@thanh-son-nguyen">alphaXiv</a>.</p>
+      </div>
 
-    <section id="projects">
-      <h2>Projects</h2>
-      <a class="proj" href="son-tinh/index.html">
-        <img src="son-tinh/shots/menu.jpg" width="450" height="800" alt="Title screen of the game Son Tinh, Duong Mang Sinh Le" loading="lazy">
-        <div>
-          <span class="k">browser game · 3D · vibe project by Claude</span>
-          <h3>Sơn Tinh, Đường Mang Sính Lễ</h3>
-          <p>A top-down 3D shooter built on the Sơn Tinh – Thủy Tinh legend. Runs in the browser on phones and desktop, with chapters, bosses and three difficulty modes.</p>
-          <span class="go">Open the game page</span>
-        </div>
-      </a>
+      <div class="tabpanel" role="tabpanel" data-panel="projects" hidden>
+        <a class="proj" href="son-tinh/index.html">
+          <img src="son-tinh/shots/menu.jpg" width="450" height="800" alt="Title screen of the game Son Tinh, Duong Mang Sinh Le" loading="lazy">
+          <div>
+            <span class="k">browser game · 3D · vibe project by Claude</span>
+            <h3>Sơn Tinh, Đường Mang Sính Lễ</h3>
+            <p>A top-down 3D shooter built on the Sơn Tinh – Thủy Tinh legend. Runs in the browser on phones and desktop, with chapters, bosses and three difficulty modes.</p>
+            <span class="go">Open the game page</span>
+          </div>
+        </a>
+      </div>
     </section>
 
     <section id="code">
@@ -497,9 +510,25 @@ section{scroll-margin-top:70px}
   // portrait tilt
   var tl=document.getElementById("tilt");
   if(tl&&!rm&&matchMedia("(hover:hover)").matches){tl.addEventListener("pointermove",function(ev){var r=tl.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width-.5,y=(ev.clientY-r.top)/r.height-.5;tl.style.transform="perspective(700px) rotateY("+x*14+"deg) rotateX("+(-y*14)+"deg) scale(1.03)"});tl.addEventListener("pointerleave",function(){tl.style.transform=""})}
+  // work tabs (Experience / Papers / Projects)
+  var activeTab="experience";
+  var tabBtns=$(".tab-btn"),panels=$(".tabpanel"),workSec=document.getElementById("work");
+  function showTab(name,scroll){
+    activeTab=name;
+    tabBtns.forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-tab")===name?"true":"false")});
+    panels.forEach(function(p){p.hidden=p.getAttribute("data-panel")!==name});
+    if(scroll&&workSec)workSec.scrollIntoView({behavior:rm?"auto":"smooth",block:"start"});
+    if(typeof sc==="function")sc();
+  }
+  tabBtns.forEach(function(b){b.addEventListener("click",function(){showTab(b.getAttribute("data-tab"),false)})});
+  ["experience","papers","projects"].forEach(function(id){
+    $('a[href="#'+id+'"]').forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();showTab(id,true);try{history.replaceState(null,"","#"+id)}catch(e){}})});
+  });
+  (function(){var h=(location.hash||"").slice(1);if(["experience","papers","projects"].indexOf(h)>-1)showTab(h,false)})();
+
   // progress + active nav
   var bar=document.getElementById("bar"),links=$("header.top nav a[href^='#']");
-  function sc(){var h=document.documentElement;bar.style.transform="scaleX("+(h.scrollTop/(h.scrollHeight-h.clientHeight||1))+")";var cur="";secs.forEach(function(s){if(s.getBoundingClientRect().top<window.innerHeight*.4)cur=s.id});links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+cur)})}
+  function sc(){var h=document.documentElement;bar.style.transform="scaleX("+(h.scrollTop/(h.scrollHeight-h.clientHeight||1))+")";var cur="";secs.forEach(function(s){if(s.getBoundingClientRect().top<window.innerHeight*.4)cur=s.id});if(cur==="work")cur=activeTab;links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+cur)})}
   addEventListener("scroll",sc,{passive:true});sc();
 })();
 </script>
