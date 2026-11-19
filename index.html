@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanh-Son Nguyen</title>
+<meta name="description" content="PhD student at Korea University researching diffusion and flow matching for medical data and gene expression.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Schibsted+Grotesk:wght@400;500;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a video-editor timeline (2012-2027) as the hero, with degrees as segments and papers as markers; a red playhead sits at "now". */
+:root{
+  --bg:#ECEFF2; --surface:#F6F8F9; --ink:#131D27; --muted:#56646F; --line:#C8D0D7;
+  --accent:#D63A2F; --seg-a:#B7C5D0; --seg-b:#7F9AAE; --seg-c:#1E3446;
+  --f-display:"Instrument Serif","Times New Roman",serif;
+  --f-body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Fragment Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F151B; --surface:#151D25; --ink:#E8EDF1; --muted:#93A1AD; --line:#2A3641;
+    --accent:#FF6A58; --seg-a:#2B3B49; --seg-b:#4A6A82; --seg-c:#B9D0E2; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F151B; --surface:#151D25; --ink:#E8EDF1; --muted:#93A1AD; --line:#2A3641;
+  --accent:#FF6A58; --seg-a:#2B3B49; --seg-b:#4A6A82; --seg-c:#B9D0E2; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6}
+a{color:inherit;text-decoration-color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1.5px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:13px;letter-spacing:.02em}
+header.top nav{display:flex;gap:18px;flex-wrap:wrap}
+header.top a{text-decoration:none}
+header.top a:hover{text-decoration:underline}
+.hero{padding:56px 0 20px}
+.eyebrow{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin:0 0 14px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,8vw,88px);line-height:.95;letter-spacing:-.01em;margin:0 0 22px;text-wrap:balance}
+h1 em{font-style:italic;color:var(--accent)}
+.lede{font-size:clamp(19px,2.4vw,23px);max-width:34em;margin:0;text-wrap:pretty}
+.lede span{color:var(--muted)}
+.hero-grid{display:grid;grid-template-columns:1fr 230px;gap:40px;align-items:end}
+.portrait{width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:4px;border:1px solid var(--line);background:var(--surface)}
+/* timeline */
+figure.tl{margin:46px 0 0;padding:22px 18px 14px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.tl-body{position:relative;height:178px}
+.tl-track{position:absolute;left:0;right:0;top:34px;height:30px;background:repeating-linear-gradient(90deg,transparent 0 calc(6.6667% - 1px),var(--line) calc(6.6667% - 1px) 6.6667%)}
+.seg{position:absolute;top:0;height:30px;border-radius:3px}
+.seg em{position:absolute;bottom:36px;left:0;font:normal 12px var(--f-mono);color:var(--muted)}
+.seg.a{background:var(--seg-a)} .seg.b{background:var(--seg-b)} .seg.c{background:var(--seg-c)}
+.seg.c em{left:auto;right:0;color:var(--ink)}
+.papers{position:absolute;left:0;right:0;top:84px;height:48px;border-top:1px dashed var(--line)}
+.papers .lbl{position:absolute;left:0;top:6px;font:12px var(--f-mono);color:var(--muted)}
+.dot{position:absolute;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:var(--ink);border:2px solid var(--surface);box-sizing:content-box}
+.dot.mis{background:var(--accent)} .dot.action{background:var(--seg-b)} .dot.other{background:var(--muted)}
+.papers .dots{position:absolute;left:0;right:0;bottom:2px;height:46px}
+.ticks{position:absolute;left:0;right:0;top:146px;height:20px;border-top:1px solid var(--ink)}
+.ticks span{position:absolute;top:4px;transform:translateX(-50%);font:12px var(--f-mono);color:var(--muted)}
+.ticks span:first-child{transform:none} .ticks span:last-child{transform:translateX(-100%)}
+.playhead{position:absolute;top:8px;bottom:12px;left:99.20%;width:0;border-left:2px solid var(--accent);animation:sweep 1.8s cubic-bezier(.2,.75,.2,1) both}
+.playhead::before{content:"";position:absolute;top:-2px;left:-7px;width:12px;height:12px;background:var(--accent);clip-path:polygon(0 0,100% 0,50% 100%)}
+.playhead b{position:absolute;bottom:26px;right:8px;font:12px var(--f-mono);color:var(--accent);font-weight:400}
+@keyframes sweep{from{left:0}}
+@media (prefers-reduced-motion:reduce){.playhead{animation:none}}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px 24px;margin:12px 0 0;padding:14px 0 0;border-top:1px solid var(--line);font-size:14.5px}
+.legend dt{font:12px var(--f-mono);color:var(--muted)}
+.legend dd{margin:2px 0 0}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:14px 0 0;font:12px var(--f-mono);color:var(--muted)}
+.key i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+
+/* motion */
+.rise{animation:rise .85s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes pop{from{transform:scale(0)}}
+.hero-grid{position:relative}
+#flow{position:absolute;left:-20px;top:-30px;width:calc(100% + 40px);height:calc(100% + 60px);z-index:0;pointer-events:none;opacity:1;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 72%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 72%,transparent)}
+.hero-text,.portrait{position:relative;z-index:1}
+.seg{background:none!important}
+.seg::after{content:"";position:absolute;inset:0;border-radius:3px;background:var(--c);transform-origin:left center;animation:grow .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+.seg.a{--c:var(--seg-a)} .seg.b{--c:var(--seg-b)} .seg.c{--c:var(--seg-c)}
+.dot{animation:pop .55s cubic-bezier(.3,1.7,.5,1) both;animation-delay:var(--d,0s)}
+.pub{position:relative;transition:transform .25s ease}
+.pub::before{content:"";position:absolute;left:-14px;top:14px;bottom:14px;width:3px;background:var(--accent);transform:scaleY(0);transition:transform .25s ease;border-radius:2px}
+.pub:hover::before{transform:scaleY(1)}
+.pub:hover{transform:translateX(6px)}
+.pub.in{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.theme h3{transition:color .2s}
+.theme:hover h3{color:var(--accent)}
+.links a,.code a{transition:transform .2s ease,border-color .2s ease}
+.links a:hover,.code a:hover{transform:translateY(-3px)}
+.tbtn{font:13px var(--f-mono);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+header.top nav{align-items:center}
+@media (prefers-reduced-motion:reduce){
+  .rise,.seg::after,.dot,.pub.in{animation:none}
+  .pub,.pub::before,.links a,.code a{transition:none}
+}
+.proj{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center;text-decoration:none;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:16px;transition:transform .25s ease,border-color .25s ease}
+.proj:hover{transform:translateY(-3px);border-color:var(--accent)}
+.proj img{width:150px;height:auto;aspect-ratio:9/16;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.proj .k{font:12px var(--f-mono);color:var(--muted)}
+.proj h3{font:400 clamp(26px,4vw,34px) var(--f-display);margin:4px 0 8px;line-height:1.1}
+.proj p{margin:0 0 12px;color:var(--muted);font-size:15.5px;max-width:36em}
+.proj .go{font:13px var(--f-mono);color:var(--accent)}
+.proj .go::after{content:" →"}
+@media (max-width:560px){.proj{grid-template-columns:96px 1fr;gap:16px}.proj img{width:96px}}
+.xp{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.xp li{display:grid;grid-template-columns:150px 1fr;gap:6px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
+.xp .when{font:13px var(--f-mono);color:var(--muted);padding-top:4px}
+.xp h3{margin:0;font-size:18px;line-height:1.35;font-weight:700}
+.xp .org{margin:2px 0 0;font-size:15px;color:var(--muted)}
+.xp p.d{margin:8px 0 0;font-size:15.5px;color:var(--muted);max-width:42em}
+.xp p.d.win{font:12.5px var(--f-mono);color:var(--accent)}
+.xp + h4,.xp h4{font:400 12px var(--f-mono);color:var(--muted);margin:28px 0 10px;text-transform:none}
+@media (max-width:560px){.xp li{grid-template-columns:1fr;gap:2px}}
+/* sections */
+section{padding:64px 0 0}
+h2{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,5vw,48px);line-height:1.05;margin:0 0 26px}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border-top:1px solid var(--ink)}
+.theme{padding:18px 22px 22px 0;border-bottom:1px solid var(--line)}
+.theme h3{font-size:18px;margin:0 0 6px;font-weight:700;line-height:1.3}
+.theme p{margin:0;font-size:15.5px;color:var(--muted)}
+.theme .n{font:12px var(--f-mono);color:var(--accent);display:block;margin-bottom:10px}
+.theme .n.e{color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.filters button{font:13px var(--f-mono);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+ul.pubs{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.pub{display:grid;grid-template-columns:56px 1fr auto;gap:6px 18px;padding:16px 0;border-bottom:1px solid var(--line)}
+.pub[hidden]{display:none}
+.yr{font:14px var(--f-mono);color:var(--muted);padding-top:3px}
+.pub h3{margin:0;font-size:17px;line-height:1.4;font-weight:500;text-wrap:pretty}
+.meta{margin:5px 0 0;font-size:14px;color:var(--muted)}
+.chip-s{font:12px var(--f-mono);color:var(--ink)}
+.chip-s.mis{color:var(--accent)}
+.cit{font:13px var(--f-mono);color:var(--muted);white-space:nowrap;padding-top:3px;font-variant-numeric:tabular-nums}
+.cit b{font-weight:400;color:var(--ink)}
+.more{margin:16px 0 0;font-size:15px;color:var(--muted)}
+.code{display:flex;flex-wrap:wrap;gap:10px}
+.code a{font:13px var(--f-mono);text-decoration:none;border:1px solid var(--line);border-radius:4px;padding:8px 12px;background:var(--surface)}
+.code a:hover{border-color:var(--accent)}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.links a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:16px 18px;background:var(--surface)}
+.links a:hover{border-color:var(--accent)}
+.links small{display:block;font:12px var(--f-mono);color:var(--muted);margin-bottom:4px}
+.links span{font-weight:700}
+.stats{display:flex;gap:28px;margin:0 0 20px;font:14px var(--f-mono);color:var(--muted)}
+.stats b{display:block;font:400 34px var(--f-display);color:var(--ink);line-height:1.1}
+footer{margin-top:72px;padding:22px 0 40px;border-top:1px solid var(--line);font:12.5px var(--f-mono);color:var(--muted)}
+@media (max-width:560px){
+  body{font-size:16px}
+  .pub{grid-template-columns:44px 1fr}
+  .cit{grid-column:2;padding:0}
+  .hero{padding-top:36px}
+  .hero-grid{grid-template-columns:1fr;gap:22px}
+  .portrait{order:-1;width:120px}
+  header.top{flex-direction:column;align-items:flex-start;gap:8px}
+}
+
+/* ===== fancy layer ===== */
+:root{--v1:#7C5CFF;--v2:#00C2FF;--v3:#FF5C8A;--glass:rgba(255,255,255,.55);--glass-b:rgba(19,29,39,.10)}
+:root[data-theme="dark"]{--glass:rgba(24,34,46,.55);--glass-b:rgba(255,255,255,.09)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--glass:rgba(24,34,46,.55);--glass-b:rgba(255,255,255,.09)}}
+body{position:relative;overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.aurora i{position:absolute;width:56vmax;height:56vmax;border-radius:50%;filter:blur(90px);opacity:.38;mix-blend-mode:normal;animation:drift 26s ease-in-out infinite alternate}
+.aurora i:nth-child(1){background:var(--v1);left:-18vmax;top:-20vmax}
+.aurora i:nth-child(2){background:var(--v2);right:-22vmax;top:8vmax;animation-delay:-9s;opacity:.30}
+.aurora i:nth-child(3){background:var(--v3);left:18vmax;bottom:-30vmax;animation-delay:-17s;opacity:.26}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.18) rotate(30deg)}}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+#bar{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));z-index:60}
+header.top{position:sticky;top:10px;z-index:50;margin-top:10px;padding:12px 18px;border:1px solid var(--glass-b);border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 8px 30px -12px rgba(0,0,0,.25)}
+header.top nav a{position:relative;padding:2px 0}
+header.top nav a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--v1),var(--v2));transform:scaleX(0);transition:transform .3s}
+header.top nav a.on::after,header.top nav a:hover::after{transform:scaleX(1)}
+header.top a:hover{text-decoration:none}
+h1{font-size:clamp(54px,10vw,112px);line-height:.92}
+h1 em{background:linear-gradient(100deg,var(--v1),var(--v2) 45%,var(--v3) 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite;padding-right:.06em}
+@keyframes shine{to{background-position:-220% 0}}
+.rot{font:14px var(--f-mono);margin:0 0 18px;color:var(--muted);min-height:1.6em}
+.rot b{font-weight:400;color:var(--ink);border-right:2px solid var(--v2);padding-right:3px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{border-color:transparent}}
+.portrait-wrap{position:relative;z-index:1;border-radius:22px;padding:3px;background:conic-gradient(from var(--a,0deg),var(--v1),var(--v2),var(--v3),var(--v1));animation:spin 8s linear infinite;transform-style:preserve-3d;transition:transform .2s ease;will-change:transform}
+@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes spin{to{--a:360deg}}
+.portrait-wrap::after{content:"";position:absolute;inset:-18px;z-index:-1;border-radius:34px;background:inherit;filter:blur(28px);opacity:.45}
+.portrait-wrap .portrait{display:block;border:0;border-radius:19px}
+.hero-grid{grid-template-columns:1fr 250px}
+figure.tl,.theme,.xp li,.proj,.links a,.code a,.pub{--mx:50%;--my:50%}
+figure.tl,.proj,.links a,.code a{background:var(--glass);border:1px solid var(--glass-b);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:16px}
+figure.tl{box-shadow:0 20px 50px -28px rgba(0,0,0,.35)}
+.themes{border-top:0;gap:14px}
+.theme,.xp li{position:relative;border:1px solid var(--glass-b)!important;border-radius:16px;background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:20px 22px!important;overflow:hidden;transition:transform .3s ease,border-color .3s}
+.xp{border-top:0;display:grid;gap:12px}
+.theme::before,.xp li::before,.proj::before,.links a::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(360px circle at var(--mx) var(--my),rgba(124,92,255,.22),rgba(0,194,255,.10) 40%,transparent 70%)}
+.theme:hover::before,.xp li:hover::before,.proj:hover::before,.links a:hover::before{opacity:1}
+.proj,.links a{position:relative;overflow:hidden}
+.theme:hover,.xp li:hover{transform:translateY(-4px);border-color:rgba(124,92,255,.55)!important}
+.theme .n{display:inline-block;padding:2px 9px;border-radius:999px;background:linear-gradient(90deg,var(--v1),var(--v2));color:#fff;font-size:11px}
+.theme .n.e{background:transparent;border:1px solid var(--line);color:var(--muted)}
+h2{position:relative;display:inline-block;padding-bottom:10px}
+h2::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:58%;border-radius:4px;background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));transform-origin:left;transform:scaleX(0);transition:transform .9s cubic-bezier(.2,.7,.2,1) .15s}
+section.in h2::after{transform:scaleX(1)}
+section{padding-top:84px}
+ul.pubs{border-top:0}
+.pub{border:1px solid transparent;border-bottom-color:var(--glass-b);padding:16px 14px;border-radius:12px;margin:0 -14px;transition:background .25s,transform .25s}
+.pub:hover{background:var(--glass)}
+.pub::before{background:linear-gradient(var(--v1),var(--v2));left:-2px}
+.cit b{background:linear-gradient(90deg,var(--v1),var(--v2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.filters button{border-radius:999px;transition:all .25s}
+.filters button[aria-pressed="true"]{background:linear-gradient(90deg,var(--v1),var(--v2));border-color:transparent;color:#fff}
+.xp .win{color:var(--v2)!important}
+.proj .go,.xp p.d.win{color:var(--v2)}
+.tbtn{background:var(--glass)}
+.reveal{opacity:0;transform:translateY(26px) scale(.985);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--rd,0s)}
+.reveal.in{opacity:1;transform:none}
+.marq{margin:34px -20px 0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.marq div{display:flex;gap:12px;width:max-content;animation:marq 38s linear infinite}
+.marq span{font:13px var(--f-mono);padding:7px 16px;border-radius:999px;border:1px solid var(--glass-b);background:var(--glass);white-space:nowrap}
+@keyframes marq{to{transform:translateX(-50%)}}
+footer{border-top-color:var(--glass-b)}
+@media (max-width:560px){header.top{border-radius:22px;top:6px}.hero-grid{grid-template-columns:1fr}.portrait-wrap{order:-1;width:130px}}
+@media (prefers-reduced-motion:reduce){.aurora i,h1 em,.portrait-wrap,.marq div,.rot b{animation:none}.reveal{opacity:1;transform:none;transition:none}}
+section{scroll-margin-top:70px}
+.xp .win,.proj .go,.xp p.d.win{color:#0A7FB0!important}
+:root[data-theme="dark"] .xp .win,:root[data-theme="dark"] .proj .go,:root[data-theme="dark"] .xp p.d.win{color:var(--v2)!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .xp .win,:root:not([data-theme="light"]) .proj .go,:root:not([data-theme="light"]) .xp p.d.win{color:var(--v2)!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div><div id="bar"></div>
+<div class="wrap">
+  <header class="top">
+    <span>thanhson28.github.io</span>
+    <nav aria-label="Sections"><a href="#research">Research</a><a href="#experience">Experience</a><a href="#papers">Papers</a><a href="#projects">Projects</a><a href="#code">Code</a><a href="#contact">Links</a><button type="button" class="tbtn" id="theme" aria-label="Switch between light and dark theme">dark</button></nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-grid">
+        <canvas id="flow" aria-hidden="true"></canvas>
+        <div class="hero-text">
+          <p class="eyebrow rise" style="--d:.05s">PhD student · Korea University</p>
+          <p class="rot rise" style="--d:.1s" aria-hidden="true">exploring <b id="rot"></b></p>
+          <h1 class="rise" style="--d:.15s">Thanh-Son <em>Nguyen</em></h1>
+          <p class="lede rise" style="--d:.3s">I research diffusion and flow matching for medical data and gene expression. <span>Before that, temporal action detection and cheapfake and misinformation detection.</span></p>
+        </div>
+        <div class="portrait-wrap rise" style="--d:.25s" id="tilt"><img class="portrait" src="profile.jpg" width="440" height="440" alt="Portrait of Thanh-Son Nguyen"></div>
+      </div>
+
+      <div class="marq" aria-hidden="true"><div id="mq"></div></div>
+      <figure class="tl rise" style="--d:.45s" aria-label="Timeline from 2012 to 2027 showing degrees and papers">
+        <div class="tl-body">
+          <div class="tl-track" aria-hidden="true"><div class="seg a" style="left:0.00%;width:33.33%;--d:0.50s"><em>BA</em></div><div class="seg b" style="left:46.67%;width:26.67%;--d:1.25s"><em>MSc</em></div><div class="seg c now" style="left:93.33%;width:5.87%;--d:1.99s"><em>PhD</em></div></div>
+          <div class="papers"><span class="lbl">papers</span><div class="dots"><i class="dot action" style="left:63.33%;bottom:0px;--d:1.51s" title="2021 · HCMUS at MediaEval 2021: Ensembles of Action Recognition Networks with"></i><i class="dot action" style="left:70.00%;bottom:0px;--d:1.62s" title="2022 · Learning generalized feature for temporal action detection: Applicatio"></i><i class="dot other" style="left:70.00%;bottom:15px;--d:1.62s" title="2022 · Improving Domain Generalization by Learning without Forgetting: Applic"></i><i class="dot other" style="left:70.00%;bottom:30px;--d:1.62s" title="2022 · HCMUS at the NTCIR-16 RCIR Task"></i><i class="dot mis" style="left:76.67%;bottom:0px;--d:1.73s" title="2023 · Leveraging cross-modals for cheapfakes detection"></i><i class="dot mis" style="left:76.67%;bottom:15px;--d:1.73s" title="2023 · Multi-Models from Computer Vision to Natural Language Processing for C"></i><i class="dot mis" style="left:83.33%;bottom:0px;--d:1.83s" title="2024 · A Unified Network for Detecting Out-Of-Context Information Using Gener"></i><i class="dot mis" style="left:83.33%;bottom:15px;--d:1.83s" title="2024 · Detecting Misinformation in Photos Utilizing Reverse Image Search"></i><i class="dot mis" style="left:83.33%;bottom:30px;--d:1.83s" title="2024 · A Hybrid Approach for Cheapfake Detection Using Reputation Checking an"></i></div></div>
+          <div class="ticks" aria-hidden="true"><span style="left:0.00%">2012</span><span style="left:20.00%">2015</span><span style="left:40.00%">2018</span><span style="left:60.00%">2021</span><span style="left:80.00%">2024</span></div>
+          <div class="playhead" aria-hidden="true"><b>now</b></div>
+        </div>
+        <div class="key" aria-hidden="true">
+          <span><i style="background:var(--accent)"></i>misinformation</span>
+          <span><i style="background:var(--seg-b)"></i>action and video</span>
+          <span><i style="background:var(--muted)"></i>other</span>
+        </div>
+        <dl class="legend">
+          <div><dt>2012 – 2017</dt><dd>BA, Mathematics and Computer Science<br>VNUHCM, University of Science</dd></div>
+          <div><dt>2019 – 2023</dt><dd>MSc, Computer Science<br>VNUHCM, University of Science</dd></div>
+          <div><dt>2026 – now</dt><dd>PhD student<br>Korea University</dd></div>
+        </dl>
+      </figure>
+    </div>
+
+    <section id="research">
+      <h2>Research</h2>
+      <div class="themes">
+        <article class="theme"><span class="n">now</span><h3>Diffusion and flow matching for medical data</h3><p>Generative models built on diffusion and flow matching, applied to medical data.</p></article>
+        <article class="theme"><span class="n">now</span><h3>Gene expression</h3><p>The same generative methods, applied to gene expression.</p></article>
+        <article class="theme"><span class="n e">earlier</span><h3>Cheapfake detection</h3><p>Cross-modal models that flag out-of-context images and captions, including training with generative synthetic data.</p></article>
+        <article class="theme"><span class="n e">earlier</span><h3>Photo misinformation</h3><p>Checking where a photo came from with reverse image search and source reputation.</p></article>
+        <article class="theme"><span class="n e">earlier</span><h3>Temporal action detection</h3><p>Learning features that generalize, to locate actions in natural driving video.</p></article>
+        <article class="theme"><span class="n e">earlier</span><h3>Recognition under shift</h3><p>Domain generalization without forgetting, and ensembles of action recognition networks.</p></article>
+      </div>
+    </section>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <ul class="xp">
+        <li><span class="when">Mar 2026 – now</span><div><h3>PhD student</h3><p class="org">Korea University, South Korea</p></div></li>
+        <li><span class="when">Jan 2020 – Feb 2026</span><div><h3>AI Engineer</h3><p class="org">Cybercore Co., Ltd. · Ho Chi Minh City</p><p class="d">Researched, reproduced and adapted state-of-the-art models for autonomous driving, face detection, pose estimation, abnormal object detection, action recognition and head pose estimation. Deployed on edge devices (Jetson family) with the DeepStream SDK.</p><p class="d win">Track 4 winner, NVIDIA AI City Challenge 2022 · 1st public / 3rd private, AI Zalo Challenge 2020 (traffic sign detection)</p></div></li>
+        <li><span class="when">Dec 2020 – Apr 2021</span><div><h3>Kaggle challenges</h3><p class="org">Self-employed</p><p class="d">Bronze medal in VinBigData Chest X-ray Abnormality Detection, with VFNet (5-fold) and YOLOv5 ensembles and medical-image augmentations.</p></div></li>
+        <li><span class="when">Jun – Oct 2019</span><div><h3>AI Engineer</h3><p class="org">Cloud Nine Solutions · Ho Chi Minh City</p><p class="d">Research on generative adversarial networks.</p></div></li>
+        <li><span class="when">Jul 2017 – May 2019</span><div><h3>AI Engineer</h3><p class="org">Global CyberSoft JSC · Vietnam</p></div></li>
+      </ul>
+      <h4 style="font:400 12px var(--f-mono);color:var(--muted);margin:28px 0 10px">education</h4>
+      <ul class="xp">
+        <li><span class="when">2026 – now</span><div><h3>PhD</h3><p class="org">Korea University</p></div></li>
+        <li><span class="when">2019 – 2023</span><div><h3>Master’s, Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
+        <li><span class="when">2012 – 2017</span><div><h3>Bachelor’s, Mathematics and Computer Science</h3><p class="org">VNUHCM – University of Science</p></div></li>
+      </ul>
+    </section>
+
+    <section id="papers">
+      <h2>Papers</h2>
+      <div class="stats" aria-label="Citation summary from the alphaXiv profile"><div><b data-count="44">44</b>citations</div><div><b data-count="4">4</b>h-index</div></div>
+      <div class="filters" role="group" aria-label="Filter papers by topic">
+        <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button type="button" id="f-mis" data-f="mis" aria-pressed="false">Misinformation</button>
+        <button type="button" id="f-action" data-f="action" aria-pressed="false">Action and video</button>
+        <button type="button" id="f-other" data-f="other" aria-pressed="false">Other</button>
+      </div>
+      <ul class="pubs" id="pubs">
+<li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>A Unified Network for Detecting Out-Of-Context Information Using Generative Synthetic Data</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>5</b> cit.</span></li>
+<li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>Detecting Misinformation in Photos Utilizing Reverse Image Search</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>4</b> cit.</span></li>
+<li class="pub" data-topic="mis"><span class="yr">2024</span><div class="pb"><h3>A Hybrid Approach for Cheapfake Detection Using Reputation Checking and End-To-End Network</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>3</b> cit.</span></li>
+<li class="pub" data-topic="mis"><span class="yr">2023</span><div class="pb"><h3>Leveraging cross-modals for cheapfakes detection</h3><p class="meta"><span class="chip-s mis">Misinformation</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>7</b> cit.</span></li>
+<li class="pub" data-topic="mis"><span class="yr">2023</span><div class="pb"><h3>Multi-Models from Computer Vision to Natural Language Processing for Cheapfakes Detection</h3><p class="meta"><span class="chip-s mis">Misinformation</span> · IEEE ICME Workshops (ICMEW) 2023</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>6</b> cit.</span></li>
+<li class="pub" data-topic="action"><span class="yr">2022</span><div class="pb"><h3>Learning generalized feature for temporal action detection: Application for natural driving action recognition challenge</h3><p class="meta"><span class="chip-s action">Action and video</span> · IEEE/CVF CVPR proceedings</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>9</b> cit.</span></li>
+<li class="pub" data-topic="other"><span class="yr">2022</span><div class="pb"><h3>Improving Domain Generalization by Learning without Forgetting: Application in Retail Checkout</h3><p class="meta"><span class="chip-s other">Other</span> · arXiv preprint</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>4</b> cit.</span></li>
+<li class="pub" data-topic="other"><span class="yr">2022</span><div class="pb"><h3>HCMUS at the NTCIR-16 RCIR Task</h3><p class="meta"><span class="chip-s other">Other</span></p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>2</b> cit.</span></li>
+<li class="pub" data-topic="action"><span class="yr">2021</span><div class="pb"><h3>HCMUS at MediaEval 2021: Ensembles of Action Recognition Networks with Prior Knowledge for Table Tennis Strokes Classification Task</h3><p class="meta"><span class="chip-s action">Action and video</span> · MediaEval</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>2</b> cit.</span></li>
+<li class="pub" data-topic="other"><span class="yr">—</span><div class="pb"><h3>EnAug: ENT Endoscopy Images Classification Using Ensemble and Augmentation Methods</h3><p class="meta"><span class="chip-s other">Other</span> · International Symposium on Information and Communication Technology</p></div><span class="cit" title="Citations listed on the alphaXiv profile"><b>1</b> cit.</span></li>
+      </ul>
+      <p class="more">Full list on <a href="https://scholar.google.com/citations?user=qQGaP14AAAAJ">Google Scholar</a> and <a href="https://www.alphaxiv.org/@thanh-son-nguyen">alphaXiv</a>.</p>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <a class="proj" href="son-tinh/index.html">
+        <img src="son-tinh/shots/menu.jpg" width="450" height="800" alt="Title screen of the game Son Tinh, Duong Mang Sinh Le" loading="lazy">
+        <div>
+          <span class="k">browser game · 3D</span>
+          <h3>Sơn Tinh, Đường Mang Sính Lễ</h3>
+          <p>A top-down 3D shooter built on the Sơn Tinh – Thủy Tinh legend. Runs in the browser on phones and desktop, with chapters, bosses and three difficulty modes.</p>
+          <span class="go">Open the game page</span>
+        </div>
+      </a>
+    </section>
+
+    <section id="code">
+      <h2>Code</h2>
+      <div class="code">
+        <a href="https://github.com/thanhson28/cheapfakes_detection_icmr2024">cheapfakes_detection_icmr2024</a>
+        <a href="https://github.com/thanhson28/accv24_lava_challenge_was">accv24_lava_challenge_was</a>
+        <a href="https://github.com/thanhson28/acmmm2025_entrep_challenge_was">acmmm2025_entrep_challenge_was</a>
+        <a href="https://github.com/thanhson28/icme2023">icme2023</a>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Links</h2>
+      <div class="links">
+        <a href="https://scholar.google.com/citations?user=qQGaP14AAAAJ"><small>publications</small><span>Google Scholar</span></a>
+        <a href="https://www.alphaxiv.org/@thanh-son-nguyen"><small>papers and notes</small><span>alphaXiv</span></a>
+        <a href="https://github.com/thanhson28"><small>code</small><span>GitHub</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>Thanh-Son Nguyen · Korea University · Updated November 2026</footer>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* theme toggle */
+  var tb = document.getElementById("theme");
+  function current() { return root.getAttribute("data-theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function label() { tb.textContent = current() === "dark" ? "light" : "dark"; }
+  try { var saved = localStorage.getItem("theme"); if (saved) root.setAttribute("data-theme", saved); } catch (e) {}
+  label();
+  tb.addEventListener("click", function () {
+    var next = current() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    label(); readColors();
+  });
+
+  /* paper filter */
+  var buttons = document.querySelectorAll(".filters button");
+  var items = document.querySelectorAll("#pubs .pub");
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var f = b.getAttribute("data-f");
+      buttons.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      var n = 0;
+      items.forEach(function (li) {
+        var show = f === "all" || li.getAttribute("data-topic") === f;
+        li.hidden = !show;
+        li.classList.remove("in");
+        if (show && !reduce) { void li.offsetWidth; li.style.setProperty("--d", (n * 0.05) + "s"); li.classList.add("in"); n++; }
+      });
+    });
+  });
+
+  /* counters */
+  if (!reduce) {
+    document.querySelectorAll("[data-count]").forEach(function (el) {
+      var end = +el.getAttribute("data-count"), t0 = null;
+      el.textContent = "0";
+      function step(t) {
+        if (t0 === null) t0 = t + 700;
+        var k = Math.min(1, Math.max(0, (t - t0) / 1200));
+        el.textContent = String(Math.round(end * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* flow field: particles drift from scattered noise into smooth streamlines */
+  var cv = document.getElementById("flow");
+  var ctx = cv.getContext("2d");
+  var W = 0, H = 0, dpr = 1, parts = [], colA = "#d63a2f", colB = "#56646f", running = false, visible = true;
+  var ptr = {x: -999, y: -999};
+  function readColors() {
+    var cs = getComputedStyle(root);
+    colA = cs.getPropertyValue("--accent").trim() || colA;
+    colB = cs.getPropertyValue("--muted").trim() || colB;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+  }
+  function spawn(p) { p.x = Math.random() * W; p.y = Math.random() * H; p.life = 80 + Math.random() * 220; p.hot = Math.random() < 0.35; return p; }
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.min(170, Math.round(W * H / 5200));
+    parts = []; for (var i = 0; i < n; i++) parts.push(spawn({}));
+  }
+  function field(x, y, t) {
+    var a = Math.sin(x * 0.0042 + t * 0.00035) * 1.9 + Math.cos(y * 0.0058 - t * 0.0003) * 1.9 + Math.sin((x + y) * 0.002 + t * 0.0002);
+    var dx = x - ptr.x, dy = y - ptr.y, d2 = dx * dx + dy * dy;
+    if (d2 < 22500) { a += Math.atan2(dy, dx) * 0.0 + (1 - d2 / 22500) * 2.4; }
+    return a;
+  }
+  function frame(t) {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = "rgba(0,0,0,0.05)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.lineWidth = 1.1;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i], a = field(p.x, p.y, t), nx = p.x + Math.cos(a) * 1.15, ny = p.y + Math.sin(a) * 1.15;
+      ctx.strokeStyle = p.hot ? colA : colB;
+      ctx.globalAlpha = p.hot ? 0.75 : 0.45;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny); ctx.stroke();
+      p.x = nx; p.y = ny; p.life--;
+      if (p.life <= 0 || nx < -10 || ny < -10 || nx > W + 10 || ny > H + 10) spawn(p);
+    }
+    ctx.globalAlpha = 1;
+  }
+  function loop(t) { if (!running) return; frame(t); requestAnimationFrame(loop); }
+  function start() { if (!running && visible && !reduce && !document.hidden) { running = true; requestAnimationFrame(loop); } }
+  function stop() { running = false; }
+  resize(); readColors();
+  if (reduce) { for (var k = 0; k < 220; k++) frame(k * 16); }
+  else {
+    start();
+    document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; visible ? start() : stop(); }).observe(cv);
+    window.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") return;
+      var r = cv.getBoundingClientRect(); ptr.x = e.clientX - r.left; ptr.y = e.clientY - r.top;
+    }, {passive: true});
+  }
+  var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { resize(); readColors(); if (reduce) for (var k = 0; k < 220; k++) frame(k * 16); }, 150); });
+})();
+
+(function(){
+  var rm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var $=function(q,c){return Array.prototype.slice.call((c||document).querySelectorAll(q))};
+  // marquee
+  var tags=["diffusion models","flow matching","medical imaging","gene expression","generative AI","cheapfake detection","action detection","domain generalization","edge AI · Jetson","DeepStream","PyTorch","Kaggle medalist","AI City 2022 winner"];
+  var mq=document.getElementById("mq");mq.innerHTML=tags.concat(tags).map(function(t){return "<span>"+t+"</span>"}).join("");
+  // typewriter
+  var words=["diffusion for medical data","flow matching for gene expression","generative models for biology","robust vision under domain shift"];
+  var el=document.getElementById("rot"),wi=0,ci=0,del=false;
+  if(rm){el.textContent=words[0]}else(function tick(){var w=words[wi];ci+=del?-1:1;el.textContent=w.slice(0,ci);var t=del?28:55;if(!del&&ci===w.length){del=true;t=1600}else if(del&&ci===0){del=false;wi=(wi+1)%words.length;t=350}setTimeout(tick,t)})();
+  // reveal
+  var items=$(".theme,.xp li,.proj,.links a,.code,.stats,.filters,.marq,h4");
+  items.forEach(function(e,i){e.classList.add("reveal");e.style.setProperty("--rd",(i%4)*0.07+"s")});
+  var secs=$("main section");
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}})},{threshold:.12,rootMargin:"0px 0px -6% 0px"});
+  items.concat(secs).forEach(function(e){io.observe(e)});
+  // spotlight
+  $(".theme,.xp li,.proj,.links a").forEach(function(e){e.addEventListener("pointermove",function(ev){var r=e.getBoundingClientRect();e.style.setProperty("--mx",ev.clientX-r.left+"px");e.style.setProperty("--my",ev.clientY-r.top+"px")})});
+  // portrait tilt
+  var tl=document.getElementById("tilt");
+  if(tl&&!rm&&matchMedia("(hover:hover)").matches){tl.addEventListener("pointermove",function(ev){var r=tl.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width-.5,y=(ev.clientY-r.top)/r.height-.5;tl.style.transform="perspective(700px) rotateY("+x*14+"deg) rotateX("+(-y*14)+"deg) scale(1.03)"});tl.addEventListener("pointerleave",function(){tl.style.transform=""})}
+  // progress + active nav
+  var bar=document.getElementById("bar"),links=$("header.top nav a[href^='#']");
+  function sc(){var h=document.documentElement;bar.style.transform="scaleX("+(h.scrollTop/(h.scrollHeight-h.clientHeight||1))+")";var cur="";secs.forEach(function(s){if(s.getBoundingClientRect().top<window.innerHeight*.4)cur=s.id});links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+cur)})}
+  addEventListener("scroll",sc,{passive:true});sc();
+})();
+</script>
+</body>
+</html>
