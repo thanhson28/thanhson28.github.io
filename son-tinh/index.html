@@ -100,9 +100,13 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
   .screens img,.chap,.btn{transition:none}
   html{scroll-behavior:auto}
 }
+.notice{font:12.5px var(--f-mono);color:var(--muted);background:var(--surface,rgba(0,0,0,.03));border-bottom:1px solid var(--line);padding:9px 20px;text-align:center}
+.notice a{color:inherit;text-decoration:underline}
+@media (max-width:560px){.notice{font-size:11.5px;padding:8px 14px}}
 </style>
 </head>
 <body>
+<div class="notice" data-en='This product was built with vibe coding. For any copyright concern, contact <a href="mailto:thanhson.job@gmail.com">thanhson.job@gmail.com</a> with supporting evidence.'>Sản phẩm này được tạo bởi vibe coding. Nếu có vấn đề gì về bản quyền, vui lòng liên hệ qua email <a href="mailto:thanhson.job@gmail.com">thanhson.job@gmail.com</a> và kèm theo minh chứng.</div>
 <canvas id="petals" aria-hidden="true"></canvas>
 <div class="wrap">
   <header class="top">
