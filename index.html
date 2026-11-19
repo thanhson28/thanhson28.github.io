@@ -107,6 +107,8 @@ header.top nav{align-items:center}
 .proj{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center;text-decoration:none;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:16px;transition:transform .25s ease,border-color .25s ease}
 .proj:hover{transform:translateY(-3px);border-color:var(--accent)}
 .proj img{width:150px;height:auto;aspect-ratio:9/16;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.proj.wide img{aspect-ratio:16/9}
+.proj.square img{aspect-ratio:1/1}
 .proj .k{font:12px var(--f-mono);color:var(--muted)}
 .proj h3{font:400 clamp(26px,4vw,34px) var(--f-display);margin:4px 0 8px;line-height:1.1}
 .proj p{margin:0 0 12px;color:var(--muted);font-size:15.5px;max-width:36em}
@@ -367,6 +369,15 @@ section{scroll-margin-top:70px}
       </div>
 
       <div class="tabpanel" role="tabpanel" data-panel="projects" hidden>
+        <a class="proj square" href="https://github.com/thanhson28/acmmm2025_entrep_challenge_was">
+          <img src="projects/entrep.jpg" width="800" height="800" alt="Grid of endoscopy images from the ENTRep challenge dataset" loading="lazy">
+          <div>
+            <span class="k">vision-language AI · medical · 🥇 1st place, ACM MM 2025</span>
+            <h3>ENTRep: ENT endoscopy image classification</h3>
+            <p>Vision-language model for classifying ENT endoscopy images into 7 anatomical classes (ear, nose, throat, vocal cords). Team WAS placed 1st on Track 1 (Image Classification) of the ENTRep Challenge at ACM Multimedia 2025.</p>
+            <span class="go">View code on GitHub</span>
+          </div>
+        </a>
         <a class="proj" href="son-tinh/index.html">
           <img src="son-tinh/shots/menu.jpg" width="450" height="800" alt="Title screen of the game Son Tinh, Duong Mang Sinh Le" loading="lazy">
           <div>
@@ -374,6 +385,22 @@ section{scroll-margin-top:70px}
             <h3>Sơn Tinh, Đường Mang Sính Lễ</h3>
             <p>A top-down 3D shooter built on the Sơn Tinh – Thủy Tinh legend. Runs in the browser on phones and desktop, with chapters, bosses and three difficulty modes.</p>
             <span class="go">Open the game page</span>
+          </div>
+        </a>
+        <a class="proj wide" href="#work">
+          <img src="projects/container-port.jpg" width="900" height="495" alt="Container yard camera feed with detection boxes around containers and trucks" loading="lazy">
+          <div>
+            <span class="k">computer vision · industry · Cybercore</span>
+            <h3>Container-angle correction for port cranes</h3>
+            <p>YOLO-based detection to estimate the real camera angle against the ideal top-down view in a container yard, correcting the container and plane boxes so crane operators get an accurate footprint.</p>
+          </div>
+        </a>
+        <a class="proj wide" href="#work">
+          <img src="projects/safety-station.jpg" width="900" height="513" alt="Train platform camera feed with a detected door zone, face blurred for privacy" loading="lazy">
+          <div>
+            <span class="k">computer vision · industry · Cybercore</span>
+            <h3>Station safety monitoring system</h3>
+            <p>Camera-based detection of the platform door zone and people near it, feeding a safety-management dashboard used to flag risk at train stations in real time.</p>
           </div>
         </a>
       </div>
