@@ -87,6 +87,16 @@ kbd{font:13px var(--f-mono);background:#0b1c11;border:1px solid var(--line);bord
 .mode.e{--c:var(--leaf)} .mode.n{--c:var(--gold)} .mode.h{--c:var(--crimson)}
 .final{margin-top:72px;padding:40px 24px;text-align:center;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1px solid var(--line);border-radius:14px}
 .final h2{margin-bottom:18px}
+.fb-form{max-width:640px;display:flex;flex-direction:column;gap:14px}
+.fb-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fb-form input,.fb-form textarea{width:100%;font:15px var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 14px;resize:vertical;font-family:inherit}
+.fb-form input::placeholder,.fb-form textarea::placeholder{color:var(--muted)}
+.fb-form input:focus,.fb-form textarea:focus{border-color:var(--leaf)}
+.fb-submit{align-self:flex-start;font-size:19px;padding:10px 24px 11px}
+.fb-status{margin:0;font:13px var(--f-mono);color:var(--muted);min-height:1.4em}
+.fb-status.ok{color:var(--leaf)}
+.fb-status.err{color:var(--crimson)}
+@media (max-width:560px){.fb-row{grid-template-columns:1fr}}
 footer{margin-top:56px;padding:22px 0 44px;border-top:1px solid var(--line);font:12.5px var(--f-mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
 footer a{text-decoration:none} footer a:hover{color:var(--gold)}
 .rise{animation:rise .85s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
@@ -205,10 +215,25 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
       <h2 data-en="Sơn Tinh is waiting in Phong Châu">Sơn Tinh đang chờ ở Phong Châu</h2>
       <a class="btn" href="play/index.html" id="play-bottom"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg><span data-en="Play now">Chơi ngay</span></a>
     </div>
+
+    <section id="gop-y">
+      <h2 data-en="Feedback">Góp ý</h2>
+      <p class="sub" data-en="Found a bug, or an idea to make the game better? Leave a note below — it goes straight to me.">Gặp lỗi hay có ý tưởng gì để game hay hơn? Để lại vài dòng bên dưới, góp ý sẽ gửi thẳng đến mình.</p>
+      <form id="fb-form" class="fb-form">
+        <div class="fb-row">
+          <input type="text" name="name" placeholder="Tên (không bắt buộc)" data-ph-en="Name (optional)" autocomplete="name">
+          <input type="email" name="email" placeholder="Email (không bắt buộc, để mình phản hồi)" data-ph-en="Email (optional, so I can reply)" autocomplete="email">
+        </div>
+        <textarea name="message" required rows="4" placeholder="Nội dung góp ý..." data-ph-en="Your feedback..."></textarea>
+        <button type="submit" class="btn fb-submit"><span data-en="Send">Gửi góp ý</span></button>
+        <p class="fb-status" id="fb-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
   </main>
 
   <footer>
     <span>© Thanh-Son Nguyen · <span data-en="Vibe-coded with Claude">Sản phẩm vibe coding với Claude</span></span>
+    <a href="#gop-y" data-en="Feedback">Góp ý</a>
     <a href="../index.html" data-en="Back to Thanh-Son Nguyen’s page">Về trang của Thanh-Son Nguyen</a>
   </footer>
 </div>
@@ -233,15 +258,17 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
   /* language: Vietnamese is the default markup; English text lives in data-en attributes */
   var META = {vi: {t: "Sơn Tinh, Đường Mang Sính Lễ", d: "Game bắn quái 3D chạy trên trình duyệt, dựng từ truyền thuyết Sơn Tinh – Thủy Tinh. Chơi trên điện thoại hoặc máy tính."},
               en: {t: "Sơn Tinh, The Betrothal Gift Road", d: "A 3D shooter that runs in your browser, built on the legend of Sơn Tinh and Thủy Tinh. Play on phone or desktop."}};
-  var tx = document.querySelectorAll("[data-en]"), al = document.querySelectorAll("[data-alt-en]"), lb = document.querySelectorAll("[data-label-en]");
+  var tx = document.querySelectorAll("[data-en]"), al = document.querySelectorAll("[data-alt-en]"), lb = document.querySelectorAll("[data-label-en]"), ph = document.querySelectorAll("[data-ph-en]");
   tx.forEach(function (e) { e.setAttribute("data-vi", e.innerHTML); });
   al.forEach(function (e) { e.setAttribute("data-alt-vi", e.getAttribute("alt")); });
   lb.forEach(function (e) { e.setAttribute("data-label-vi", e.getAttribute("aria-label")); });
+  ph.forEach(function (e) { e.setAttribute("data-ph-vi", e.getAttribute("placeholder")); });
   function setLang(l, save) {
     lang = l; names = NAMES[l];
     tx.forEach(function (e) { e.innerHTML = e.getAttribute(l === "en" ? "data-en" : "data-vi"); });
     al.forEach(function (e) { e.setAttribute("alt", e.getAttribute(l === "en" ? "data-alt-en" : "data-alt-vi")); });
     lb.forEach(function (e) { e.setAttribute("aria-label", e.getAttribute(l === "en" ? "data-label-en" : "data-label-vi")); });
+    ph.forEach(function (e) { e.setAttribute("placeholder", e.getAttribute(l === "en" ? "data-ph-en" : "data-ph-vi")); });
     document.documentElement.setAttribute("lang", l);
     document.title = META[l].t;
     var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", META[l].d);
@@ -255,6 +282,28 @@ footer a{text-decoration:none} footer a:hover{color:var(--gold)}
   var pref = null; try { pref = localStorage.getItem("lang"); } catch (e) {}
   if (!pref) pref = /^vi/i.test(navigator.language || "") ? "vi" : "en";
   if (pref === "en") setLang("en", false);
+
+  /* feedback form: posts to Formspree so notes land in email, no backend needed */
+  var fbForm = document.getElementById("fb-form"), fbStatus = document.getElementById("fb-status");
+  if (fbForm) {
+    fbForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var data = new FormData(fbForm);
+      fbStatus.className = "fb-status";
+      fbStatus.textContent = lang === "en" ? "Sending…" : "Đang gửi…";
+      fetch("https://formspree.io/f/xqpqlrey", {method: "POST", body: data, headers: {Accept: "application/json"}})
+        .then(function (r) {
+          if (!r.ok) throw new Error("bad response");
+          fbForm.reset();
+          fbStatus.className = "fb-status ok";
+          fbStatus.textContent = lang === "en" ? "Thanks! Your feedback was sent." : "Cảm ơn! Góp ý của bạn đã được gửi.";
+        })
+        .catch(function () {
+          fbStatus.className = "fb-status err";
+          fbStatus.textContent = lang === "en" ? "Couldn't send — please email thanhson.job@gmail.com directly." : "Gửi không thành công, vui lòng email trực tiếp cho thanhson.job@gmail.com.";
+        });
+    });
+  }
 
   function auto() { if (reduce) return; clearInterval(timer); timer = setInterval(function () { show((cur + 1) % imgs.length); }, 3600); }
   dots.forEach(function (d, k) { d.addEventListener("click", function () { show(k); auto(); }); });
